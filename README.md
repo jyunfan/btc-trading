@@ -1,12 +1,12 @@
 Algorithm trading for Bitcoin
 ---
-Trading program base on zipline.
+Use simple moving average as trading strategy.
 
 Installation
 ---
-# You need Python and related libraries.  Just follow https://github.com/quantopian/zipline to install zipline.
-# Download MtGox exchange data.  Follow [nitrous](https://bitcointalk.org/index.php?topic=164404.msg2245629#msg2245629)'s instruction.  Rename the archive.db to mtgox.db.
+sudo pip install requests pandas
+sudo pip install git+git://github.com/kmadac/bitstamp-python-client.git
 
 Dependencies
 ---
-* zipline
+* http://bitcoincharts.com/ Data source.
