@@ -73,8 +73,9 @@ class exchange():
             logger.info('USD available = %.2f, skip buy' % balance['usd_available'])
             return
 
-        btc_to_buy = min(btc_to_buy, self.BTC_MAX)
-        logger.info('Buy %.2f BTC at %.2f USD' % (btc_to_buy, price))
+        btc_to_buy = '%.2f' % min(btc_to_buy, self.BTC_MAX)
+        price = '%.2f' % price
+        logger.info('Buy %s BTC at %s USD' % (btc_to_buy, price))
         response = self.bs_client.buy_limit_order(amount=btc_to_buy, price=buy_price)
         logger.info('Response of sell: id=%(id)s, amount=%(amount)s, price=%(price)s, datetime=%(datetime)s' % response)
 
@@ -96,8 +97,9 @@ class exchange():
             logger.info('BTC available = %.2f, skip sell' % btc_to_sell)
             return
 
-        btc_to_sell = min(btc_to_sell, self.BTC_MAX)
-        logger.info('Sell %.2f BTC at %.2f USD' % (btc_to_sell, price))
+        btc_to_sell = '%.2f' % min(btc_to_sell, self.BTC_MAX)
+        price = '%.2f' % price
+        logger.info('Sell %s BTC at %s USD' % (btc_to_sell, price))
         response = self.bs_client.sell_limit_order(amount=btc_to_sell, price=price)
         logger.info('Response of sell: id=%(id)s, amount=%(amount)s, price=%(price)s, datetime=%(datetime)s' % response)
 
