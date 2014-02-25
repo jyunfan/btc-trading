@@ -1,0 +1,3 @@
+
+class Exchange():
+    pass
