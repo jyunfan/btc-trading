@@ -1,1 +1,6 @@
-git+git://github.com/alanmcintyre/btce-api.git
+BitstampClient==2.0.3
+argparse==1.2.1
+bitfinex==0.2.6
+httpretty==0.8.10
+requests==2.1.0
+wsgiref==0.1.2
