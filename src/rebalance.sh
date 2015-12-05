@@ -3,5 +3,5 @@
 while true
 do
 python rebalance.py
-sleep 60
+sleep 600
 done
