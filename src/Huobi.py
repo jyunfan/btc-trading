@@ -1,3 +1,5 @@
+#coding=utf-8
+
 import logging
 
 import sys
@@ -56,19 +58,13 @@ class Huobi(Exchange):
         return orders
 
 
-    def buy(self, amount, price, cointype='btc'):
-        result = huobi_api.buy(cointype=cointype,price=price,amount=amount,trade_password=huobi_api.TRADE_PASS)
+    def buy(self, amount, price, coin='btc'):
+        result = huobi_api.buy(coinType=cointype(coin),price=price,amount=amount,tradePassword=huobi_api.TRADE_PASS,tradeid=None,method='buy')
         print("buy", result)
 
 
-    def sell(self, amount, price, cointype='btc'):
-        if cointype == 'btc':
-            ct = 1
-        elif contype == 'ltc':
-            ct = 2
-        else:
-            raise ValueError()
-        result = huobi_api.sell(coinType=ct,price=price,amount=amount,tradePassword=huobi_api.TRADE_PASS,tradeid=None,method='sell')
+    def sell(self, amount, price, coin='btc'):
+        result = huobi_api.sell(coinType=cointype(coin),price=price,amount=amount,tradePassword=huobi_api.TRADE_PASS,tradeid=None,method='sell')
         print("sell", result)
 
 

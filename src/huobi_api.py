@@ -1,11 +1,15 @@
 #coding=utf-8
 
 import time
-
 import requests
-
-import urllib
 import hashlib
+
+try:
+    # python 2
+    from urllib import urlencode
+except ImportError:
+    # python 3
+    from urllib.parse import urlencode
 
 ACCESS_KEY=""
 SECRET_KEY=""
@@ -24,11 +28,13 @@ ORDER_INFO = "order_info"
 SELL = "sell"
 SELL_MARKET = "sell_market"
 
+TIMEOUT = 10
+
 def signature(params):
-    params = sorted(params.iteritems(), key=lambda d:d[0], reverse=False)
-    message = urllib.urlencode(params)
+    params = sorted(zip(params.keys(), params.values()), key=lambda d:d[0], reverse=False)
+    message = urlencode(params)
     m = hashlib.md5()
-    m.update(message)
+    m.update(message.encode('utf-8'))
     m.digest()
     sig=m.hexdigest()
     return sig
@@ -37,15 +43,15 @@ def signature(params):
 ÷lAH±¡
 '''
 def getAccountInfo():
-    timestamp = long(time.time())
+    timestamp = int(time.time())
     params = {"access_key": ACCESS_KEY,"secret_key": SECRET_KEY, "created": timestamp,"method":'get_account_info'}
     sign=signature(params)
     params['sign']=sign
 
     del params['secret_key']
 
-    payload = urllib.urlencode(params)
-    r = requests.post(HUOBI_SERVICE_API, params=payload)
+    payload = urlencode(params)
+    r = requests.post(HUOBI_SERVICE_API, params=payload, timeout=TIMEOUT)
     if r.status_code == 200:
         data = r.json()
         return data
@@ -62,7 +68,7 @@ def getAccountInfo():
 @param method
 '''
 def buy(coinType,price,amount,tradePassword,tradeid,method):
-    timestamp = long(time.time())
+    timestamp = int(time.time())
     params = {"access_key": ACCESS_KEY,"secret_key": SECRET_KEY, "created": timestamp,"price":price,"coin_type":coinType,"amount":amount,"method":method}
     sign=signature(params)
     params['sign']=sign
@@ -72,8 +78,8 @@ def buy(coinType,price,amount,tradePassword,tradeid,method):
     if tradeid:
         params['trade_id']=tradeid
 
-    payload = urllib.urlencode(params)
-    r = requests.post(HUOBI_SERVICE_API, params=payload)
+    payload = urlencode(params)
+    r = requests.post(HUOBI_SERVICE_API, params=payload, timeout=TIMEOUT)
     if r.status_code == 200:
         data = r.json()
         return data
@@ -89,7 +95,7 @@ def buy(coinType,price,amount,tradePassword,tradeid,method):
 '''
 
 def buyMarket(coinType,amount,tradePassword,tradeid,method):
-    timestamp = long(time.time())
+    timestamp = int(time.time())
     params = {"access_key": ACCESS_KEY,"secret_key": SECRET_KEY, "created": timestamp,"coin_type":coinType,"amount":amount,"method":method}
     sign=signature(params)
     params['sign']=sign
@@ -100,8 +106,8 @@ def buyMarket(coinType,amount,tradePassword,tradeid,method):
 
     del params['secret_key']
 
-    payload = urllib.urlencode(params)
-    r = requests.post(HUOBI_SERVICE_API, params=payload)
+    payload = urlencode(params)
+    r = requests.post(HUOBI_SERVICE_API, params=payload, timeout=TIMEOUT)
     if r.status_code == 200:
         data = r.json()
         return data
@@ -115,14 +121,14 @@ def buyMarket(coinType,amount,tradePassword,tradeid,method):
 '''
 
 def cancelOrder(coinType,id,method):
-    timestamp = long(time.time())
+    timestamp = int(time.time())
     params = {"access_key": ACCESS_KEY,"secret_key": SECRET_KEY, "created": timestamp,"coin_type":coinType,"id":id,"method":method}
     sign=signature(params)
     params['sign']=sign
     del params['secret_key']
 
-    payload = urllib.urlencode(params)
-    r = requests.post(HUOBI_SERVICE_API, params=payload)
+    payload = urlencode(params)
+    r = requests.post(HUOBI_SERVICE_API, params=payload, timeout=TIMEOUT)
     if r.status_code == 200:
         data = r.json()
         return data
@@ -133,14 +139,14 @@ def cancelOrder(coinType,id,method):
 ¬dRª¤H³̷s10W¦¨¥æË@param coinType
 '''
 def getNewDealOrders(coinType,method):
-    timestamp = long(time.time())
+    timestamp = int(time.time())
     params = {"access_key": ACCESS_KEY,"secret_key": SECRET_KEY, "created": timestamp,"coin_type":coinType,"method":method}
     sign=signature(params)
     params['sign']=sign
     del params['secret_key']
 
-    payload = urllib.urlencode(params)
-    r = requests.post(HUOBI_SERVICE_API, params=payload)
+    payload = urlencode(params)
+    r = requests.post(HUOBI_SERVICE_API, params=payload, timeout=TIMEOUT)
     if r.status_code == 200:
         data = r.json()
         return data
@@ -153,14 +159,14 @@ def getNewDealOrders(coinType,method):
 @param tradeid
 '''
 def getOrderIdByTradeId(coinType,tradeid,method):
-    timestamp = long(time.time())
+    timestamp = int(time.time())
     params = {"access_key": ACCESS_KEY,"secret_key": SECRET_KEY, "created": timestamp,"coin_type":coinType,"method":method,"trade_id":tradeid}
     sign=signature(params)
     params['sign']=sign
     del params['secret_key']
 
-    payload = urllib.urlencode(params)
-    r = requests.post(HUOBI_SERVICE_API, params=payload)
+    payload = urlencode(params)
+    r = requests.post(HUOBI_SERVICE_API, params=payload, timeout=TIMEOUT)
     if r.status_code == 200:
         data = r.json()
         return data
@@ -172,14 +178,14 @@ def getOrderIdByTradeId(coinType,tradeid,method):
 @param coinType
 '''
 def getOrders(coinType,method):
-    timestamp = long(time.time())
+    timestamp = int(time.time())
     params = {"access_key": ACCESS_KEY,"secret_key": SECRET_KEY, "created": timestamp,"coin_type":coinType,"method":method}
     sign=signature(params)
     params['sign']=sign
     del params['secret_key']
 
-    payload = urllib.urlencode(params)
-    r = requests.post(HUOBI_SERVICE_API, params=payload)
+    payload = urlencode(params)
+    r = requests.post(HUOBI_SERVICE_API, params=payload, timeout=TIMEOUT)
     if r.status_code == 200:
         data = r.json()
         return data
@@ -192,14 +198,14 @@ def getOrders(coinType,method):
 @param id
 '''
 def getOrderInfo(coinType,id,method):
-    timestamp = long(time.time())
+    timestamp = int(time.time())
     params = {"access_key": ACCESS_KEY,"secret_key": SECRET_KEY, "created": timestamp,"coin_type":coinType,"method":method,"id":id}
     sign=signature(params)
     params['sign']=sign
     del params['secret_key']
 
-    payload = urllib.urlencode(params)
-    r = requests.post(HUOBI_SERVICE_API, params=payload)
+    payload = urlencode(params)
+    r = requests.post(HUOBI_SERVICE_API, params=payload, timeout=TIMEOUT)
     if r.status_code == 200:
         data = r.json()
         return data
@@ -215,7 +221,7 @@ def getOrderInfo(coinType,id,method):
 @param tradeid
 '''
 def sell(coinType,price,amount,tradePassword,tradeid,method):
-    timestamp = long(time.time())
+    timestamp = int(time.time())
     params = {"access_key": ACCESS_KEY,"secret_key": SECRET_KEY, "created": timestamp,"price":price,"coin_type":coinType,"amount":amount,"method":method}
     sign=signature(params)
     params['sign']=sign
@@ -225,8 +231,8 @@ def sell(coinType,price,amount,tradePassword,tradeid,method):
     if tradeid:
         params['trade_id']=tradeid
 
-    payload = urllib.urlencode(params)
-    r = requests.post(HUOBI_SERVICE_API, params=payload)
+    payload = urlencode(params)
+    r = requests.post(HUOBI_SERVICE_API, params=payload, timeout=TIMEOUT)
     if r.status_code == 200:
         data = r.json()
         return data
@@ -240,8 +246,8 @@ def sell(coinType,price,amount,tradePassword,tradeid,method):
 @param tradePassword
 @param tradeid
 '''
-def sellMarket(coinType,amount,tradePassword,tradeid,method):
-    timestamp = long(time.time())
+def sellMarket(coinType,amount,tradePassword,tradeid,method, timeout=TIMEOUT):
+    timestamp = int(time.time())
     params = {"access_key": ACCESS_KEY,"secret_key": SECRET_KEY, "created": timestamp,"coin_type":coinType,"amount":amount,"method":method}
     sign=signature(params)
     params['sign']=sign
@@ -252,7 +258,7 @@ def sellMarket(coinType,amount,tradePassword,tradeid,method):
 
     del params['secret_key']
 
-    payload = urllib.urlencode(params)
+    payload = urlencode(params)
     r = requests.post(HUOBI_SERVICE_API, params=payload)
     if r.status_code == 200:
         data = r.json()
