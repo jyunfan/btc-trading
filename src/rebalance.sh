@@ -1,7 +1,7 @@
 #!/bin/bash
-
+echo $@
 while true
 do
-python rebalance.py
+../env/bin/python rebalance.py $@
 sleep 600
 done
