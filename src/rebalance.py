@@ -16,11 +16,10 @@ FORMAT = '%(asctime)-15s %(module)s %(message)s'
 logging.basicConfig(level=logging.INFO, filename='rebalance.log', format=FORMAT)
 #logging.basicConfig(level=logging.INFO, format=FORMAT)
 
+logging.getLogger('requests').setLevel(logging.WARN)
 
 def main(exchange_name, keyfile, min_trade_btc=0.01, min_price_change=1.01, fiat='usd', sleep_second=60):
     min_trade_btc = 0.001
-    min_price_change = 1.001
-
     # When account is balance, we create buy and sell limit order at expect price change
     expect_price_change = 1.002
 
@@ -42,16 +41,16 @@ def main(exchange_name, keyfile, min_trade_btc=0.01, min_price_change=1.01, fiat
         logging.info("Cancel existing orders")
         exchange.cancel_all_orders(coin)
 
-        balance = exchange.balance()
-        fiat_amount = balance[fiat + '_balance']
-        btc_amount = balance['btc_balance']
-        logging.info('balance: FIAT: %.2f, BTC: %.2f' % (fiat_amount, btc_amount))
-
         ticker = exchange.ticker()
         btc_price = (ticker['ask']+ticker['bid'])/2
 
-        logging.info('btc price: %.2f' % btc_price)
+        balance = exchange.balance()
+        fiat_amount = balance[fiat + '_balance']
+        btc_amount = balance['btc_balance']
         btc_in_fiat = btc_amount * btc_price
+        logging.info('btc price: %.2f' % btc_price)
+        logging.info('balance: total BTC = %.2f, total FIAT = %.2f, FIAT: %.2f, BTC: %.2f' % (btc_amount + fiat_amount / btc_price, btc_in_fiat + fiat_amount, fiat_amount, btc_amount))
+
 
         logging.info("FIAT/COIN=%.4f" % (fiat_amount / btc_in_fiat))
         if fiat_amount > btc_in_fiat * min_price_change:
