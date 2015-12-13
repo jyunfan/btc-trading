@@ -9,14 +9,16 @@ import bitstamp.client
 
 import price
 
-LOOP_INTERVAL = 300
+LOOP_INTERVAL = 60
 
 logger = logging.getLogger( __name__ )
 
 """ Decide whether should buy or sell by using short and long term average. """
 def decide_action():
-    window_short =  180 # 3 hours
-    window_long  = 2160 # 3 days
+#    window_short =  180 # 3 hours
+#    window_long  = 2160 # 3 days
+    window_short =  60 #  1 hour
+    window_long  = 720 # 12 hours
     p = price.get_current_price([window_short, window_long])
 
     logger.debug("short SMA = %.2f, long SMA = %.2f" % (p[0], p[1]))
@@ -27,7 +29,7 @@ def decide_action():
         return "sell"
 
 class exchange():
-    BTC_MAX = 10
+    BTC_MAX = 3
 
     def __init__(self, keyfile):
         f = open(keyfile)
@@ -50,9 +52,11 @@ class exchange():
         return balance
 
     def cancel_all(self):
+        logger.debug("cancel_all()")
+
         orders = self.bs_client.open_orders()
         for order in orders:
-            logger.info('Cancel order %d' % order['id'])
+            logger.info('Cancel order %s' % order['id'])
             self.bs_client.cancel_order(order['id'])
 
     def buy(self):
@@ -76,14 +80,17 @@ class exchange():
         btc_to_buy = '%.2f' % min(btc_to_buy, self.BTC_MAX)
         price = '%.2f' % price
         logger.info('Buy %s BTC at %s USD' % (btc_to_buy, price))
-        response = self.bs_client.buy_limit_order(amount=btc_to_buy, price=buy_price)
-        logger.info('Response of sell: id=%(id)s, amount=%(amount)s, price=%(price)s, datetime=%(datetime)s' % response)
+        response = self.bs_client.buy_limit_order(amount=btc_to_buy, price=price)
+        logger.info('Response of buy: id=%(id)s, amount=%(amount)s, price=%(price)s, datetime=%(datetime)s' % response)
 
     def sell(self):
+        logger.debug("sell()")
+
         self.cancel_all()
 
         ticker = self.bs_client_public.ticker()
         for attr in ticker:
+            logger.debug("ticker[%s] = %s" % (attr, ticker[attr]))
             ticker[attr] = float(ticker[attr])
         bid = ticker['bid']
         price = bid * 0.99
@@ -104,21 +111,19 @@ class exchange():
         logger.info('Response of sell: id=%(id)s, amount=%(amount)s, price=%(price)s, datetime=%(datetime)s' % response)
 
 def trading_loop():
+    action = decide_action()
     ex = exchange(sys.argv[1])
-    while True:
-        try:
-            action = decide_action()
-            #action = 'sell'
-            #action = 'buy'
-            if action == 'buy':
-                ex.buy()
-            else:
-                ex.sell()
-        except:
-            print sys.exc_info()[0]
-            logger.error("Unknwon exception in main loop")
-            exit(0)
-
+    for i in range(18):
+        print "iteration %d" % i
+#        try:
+        if action == 'buy':
+            ex.buy()
+        else:
+            ex.sell()
+#        except:
+#            print sys.exc_info()[0]
+#            logger.error("Unknwon exception in main loop")
+#        finally:
         sleep(LOOP_INTERVAL)
 
 def main():
