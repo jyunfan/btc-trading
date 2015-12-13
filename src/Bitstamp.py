@@ -56,7 +56,8 @@ class Bitstamp(Exchange):
         self.bs_client.cancel_order(order_id)
 
 
-    def cancel_all_orders(self):
+    def cancel_all_orders(self, coin):
+        # coin is 'btc' or 'ltc', but unused now
         orders = self.open_orders()
         for order in orders:
             self.bs_client.cancel_order(order['id'])
