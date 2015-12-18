@@ -103,21 +103,26 @@ def on_open(self):
     '''
     global currency
     if currency == 'cny':
-        pass
+        channels = [
+            'ok_btccny_depth',
+            'ok_btccny_trades_v1',
+            'ok_ltccny_depth',
+            'ok_ltccny_trades_v1',
+        ]
     else:
         channels = [
-                'ok_btcusd_depth',
-                'ok_btcusd_trades_v1',
-                'ok_ltcusd_depth',
-                'ok_ltcusd_trades_v1',
+            'ok_btcusd_depth',
+            'ok_btcusd_trades_v1',
+            'ok_ltcusd_depth',
+            'ok_ltcusd_trades_v1',
 
-                'ok_btcusd_future_depth_this_week',
-                'ok_btcusd_future_depth_next_week',
-                'ok_btcusd_future_depth_quarter',
-                'ok_btcusd_future_trade_v1_this_week',
-                'ok_btcusd_future_trade_v1_next_week',
-                'ok_btcusd_future_trade_v1_quarter',
-            ]
+            'ok_btcusd_future_depth_this_week',
+            'ok_btcusd_future_depth_next_week',
+            'ok_btcusd_future_depth_quarter',
+            'ok_btcusd_future_trade_v1_this_week',
+            'ok_btcusd_future_trade_v1_next_week',
+            'ok_btcusd_future_trade_v1_quarter',
+        ]
     for channel in channels:
         ret = self.send("{'event':'addChannel','channel':'%s','binary':'true'}" % channel)
 
